@@ -39,4 +39,4 @@ jobs:
         python -m unittest -v
     - name: Test with pytest
       run: |
-        pytest -v
+        pytest -v -r
