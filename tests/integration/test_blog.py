@@ -51,6 +51,8 @@ class BlogTest(TestCase):
                                      BlogTest.POST_TEST_CONTENT
                                      ))
 
+        print(blog.json())
+
         self.assertEqual(json_blog_expected, str(blog.json()))
 
     def test_json_dictionary(self):
