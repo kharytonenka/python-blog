@@ -12,14 +12,28 @@ class AppTest(TestCase):
     POST_TEST_TITLE = "Post Test Title"
     POST_TEST_CONTENT = "Post Test Content"
 
+    def test_menu_calls_create_blog_1(self):
+        with patch("builtins.input") as mocked_input:
+            mocked_input.side_effect = ("c", AppTest.BLOG_TEST_TITLE_1, AppTest.BLOG_TEST_AUTHOR_1, "q")
+            app.menu()
+            self.assertIsNotNone(app.blogs[AppTest.BLOG_TEST_TITLE_1])
+
+    def test_menu_calls_create_blog_2(self):
+        with patch("builtins.input") as mocked_input:
+            # "ask_create_blog" is not executed, as it's being mocked, but we can check that it is called
+            with patch("app.ask_create_blog") as mocked_ask_create_blog:
+                mocked_input.side_effect = ("c", "q")
+                app.menu()
+                mocked_ask_create_blog.assert_called()
+
     def test_menu_prints_prompt(self):
-        with patch("builtins.input", return_value='q') as mocked_print:
+        with patch("builtins.input", return_value="q") as mocked_print:
             app.menu()
             mocked_print.assert_called_with(app.MENU_PROMPT)
 
     def test_menu_calls_print_blogs(self):
         with patch("app.print_blogs") as mocked_print_blogs:
-            with patch('builtins.input', return_value='q'):
+            with patch('builtins.input', return_value="q"):
                 app.menu()
                 mocked_print_blogs.assert_called()
 
@@ -66,3 +80,14 @@ class AppTest(TestCase):
 
             mocked_print.assert_called_with(
                 app.POST_TEMPLATE.format(AppTest.POST_TEST_TITLE, AppTest.POST_TEST_CONTENT))
+
+    def test_ask_create_post(self):
+        blog = Blog(AppTest.BLOG_TEST_TITLE_1, AppTest.BLOG_TEST_AUTHOR_1)
+        app.blogs[AppTest.BLOG_TEST_TITLE_1] = blog
+
+        with patch("builtins.input") as mocked_input:
+            mocked_input.side_effect = (AppTest.BLOG_TEST_TITLE_1, AppTest.POST_TEST_TITLE, AppTest.POST_TEST_CONTENT)
+            app.ask_create_post()
+
+            self.assertEqual(blog.posts[0].title, AppTest.POST_TEST_TITLE)
+            self.assertEqual(blog.posts[0].content, AppTest.POST_TEST_CONTENT)

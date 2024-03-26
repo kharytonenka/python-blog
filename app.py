@@ -32,7 +32,7 @@ def print_blogs():
 
 def ask_create_blog():
     title = input("Enter the blog title: ")
-    author = input("Enter blog author name: ")
+    author = input("Enter the blog author name: ")
     blog = Blog(title, author)
     blogs[title] = blog
 
@@ -53,4 +53,8 @@ def print_post(post):
 
 
 def ask_create_post():
-    pass
+    blog_title = input("Enter the blog title you want to wright a post in: ")
+    post_title = input("Enter the post title: ")
+    post_content = input("Enter the post content: ")
+
+    blogs[blog_title].create_post(post_title, post_content)
